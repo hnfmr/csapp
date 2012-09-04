@@ -16,6 +16,7 @@ int get_msb(int x) {
 int get_lsb(int x) {
   return x & LFB;
 }
+
 /////
 
 unsigned replace_byte(unsigned x, int i, unsigned char b) {
@@ -98,4 +99,25 @@ int msb_has_zero(int x, size_t len) {
 
 int umsb_has_zero(unsigned x, size_t len) {
   return uabez((unsigned char)get_msb(x), sizeof(unsigned char));
+}
+
+int int_shifts_are_arithmetic() {
+  return ~0>>3 == ~0;
+}
+
+unsigned srl(unsigned x, int k) {
+  unsigned xsra = (int) x >> k;
+  size_t leftShiftSize = sizeof(int) * 8 - k;
+  return xsra & ~(~0<<leftShiftSize);
+}
+
+int sra(int x, int k) {
+  int xsrl = (unsigned) x >> k;
+  size_t leftShiftSize = sizeof(int) * 8 - k;
+  /* This might break coding convention. But no better solution I could find.*/
+  const int bit8 = 0x80000000;
+  if (x & bit8) {
+    return xsrl | (~0<<leftShiftSize);
+  }
+  return xsrl;
 }

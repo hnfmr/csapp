@@ -7,6 +7,11 @@
 extern "C" {
 #endif
 
+#define w_assert(message, test) do { if (!(test)) return message; } while (0)
+#define w_run_test(test) do { char *message = test(); tests_run++; \
+  if (message) return message; } while (0)
+extern int tests_run;
+
 /* replaces the i-th byte of x with b */
 unsigned replace_byte(unsigned x, int i, unsigned char b);
 
@@ -24,10 +29,13 @@ int lsb_has_one(int x);
 int msb_has_zero(int x, size_t len);
 int umsb_has_zero(unsigned x, size_t len);
 
-#define w_assert(message, test) do { if (!(test)) return message; } while (0)
-#define w_run_test(test) do { char *message = test(); tests_run++; \
-  if (message) return message; } while (0)
-extern int tests_run;
+int int_shifts_are_arithmetic();
+
+/* performs logical right shift using an arithmetic right shift */
+unsigned srl(unsigned x, int k);
+
+/* perform arithmetic right shift using an logical right shift */
+int sra(int x, int k);
 
 #ifdef __cplusplus
 }

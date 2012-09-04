@@ -45,12 +45,46 @@ static char* test_msb_has_zero() {
   return 0;
 }
 
+static char* test_shifts_are_arithmetic() {
+  w_assert("int shifts are not arithmetic", int_shifts_are_arithmetic() != 0);
+  return 0;
+}
+
+static char* test_right_shifts() {
+  unsigned x1 = 0x12345678;
+  unsigned x2 = 0x1234;
+  unsigned x3 = 0xffff;
+  unsigned x4 = 0xf3ffffff;
+
+  int x5 = 0x12345678;
+  int x6 = 0x1234;
+  int x7 = 0xffff;
+  int x8 = 0xf3ffffff;
+  w_assert("Failed: srl 4 x1", srl(x1, 4) == 0x1234567);
+  w_assert("Failed: srl 24 x1", srl(x1, 24) == 0x12);
+
+  w_assert("Failed: srl 4 x3", srl(x3, 4) == 0xfff);
+  w_assert("Failed: srl 12 x3", srl(x3, 12) == 0xf);
+
+  w_assert("Failed: sra 4 x1", sra(x1, 4) == 0x1234567);
+  w_assert("Failed: sra 24 x1", sra(x1, 24) == 0x12);
+
+  w_assert("Failed: sra 4 x4", sra(x4, 4) == 0xff3fffff);
+  w_assert("Failed: sra 24 x4", sra(x4, 24) == 0xfffffff3);
+
+  w_assert("Failed: sra 4 x8", sra(x8, 4) == 0xff3fffff);
+  w_assert("Failed: sra 24 x8", sra(x8, 24) == 0xfffffff3);
+  return 0;
+}
+
 static char* all_tests() {
   w_run_test(test_replace_bytes);
   w_run_test(test_any_bit_equals_one);
   w_run_test(test_any_bit_equals_zero);
   w_run_test(test_lsb_has_one);
   w_run_test(test_msb_has_zero);
+  w_run_test(test_shifts_are_arithmetic);
+  w_run_test(test_right_shifts);
   return 0;
 }
 
